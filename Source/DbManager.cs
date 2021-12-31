@@ -49,7 +49,31 @@ namespace ORM
 
         public IDataReader ExecuteReader(string sqlStr, Dictionary<string, object> conditions)
         {
-            return null;
+            var isClose = this.connection.State == ConnectionState.Closed ? true : false;
+            try
+            {
+                var command = this.connection.CreateCommand();
+                command.CommandText = sqlStr;
+
+                foreach (var condition in conditions)
+                {
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = condition.Key;
+                    parameter.Value = condition.Value ?? DBNull.Value;
+                    command.Parameters.Add(parameter);
+                }
+
+                if (isClose)
+                {
+                    this.connection.Open();
+                }
+
+                return command.ExecuteReader(CommandBehavior.CloseConnection);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
