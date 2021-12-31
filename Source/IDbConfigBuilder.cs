@@ -13,6 +13,6 @@ namespace ORM
         void addDbPort(string port);
         void addDbPasswordString (string pass);
         void addDbCustom(string custom);
-        DbProvider buildProvider();
+        DbManager buildProvider();
     }
 }

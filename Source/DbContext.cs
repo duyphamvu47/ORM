@@ -9,7 +9,7 @@ namespace ORM
     public class DbContext
     {
         protected ISqlStringBuilder sqlStringBuilder;
-        protected DbProvider dbProvider;
+        protected DbManager dbProvider;
         protected IDbFactory dbFactory;
 
         /*-------------------------------------------*/

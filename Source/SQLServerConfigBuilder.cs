@@ -28,7 +28,7 @@ namespace ORM
             throw new NotImplementedException();
         }
 
-        public DbProvider buildProvider()
+        public DbManager buildProvider()
         {
             return null;
         }
