@@ -13,9 +13,40 @@ namespace ORM
             throw new NotImplementedException();
         }
 
-        public string BuildInsert()
+        public string BuildInsert(EntityMapper entityMapping, List<string> columnNames)
         {
-            throw new NotImplementedException();
+            StringBuilder sqlString = new StringBuilder();
+            sqlString.Append("INSERT INTO ").Append(entityMapping.TableName).Append(" (");
+
+            //Convert columnNames to string
+            var columns = entityMapping.EntityColumns
+                .Where(m => m.IsDbGenerated == false && 
+                            columnNames.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
+                            .ToArray();
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var member = columns[i];
+                if (i > 0)
+                    sqlString.Append(",");
+
+                sqlString.Append(member.ColumnName);
+            }
+
+            //Pass value 
+            sqlString.Append(") VALUES (");
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var member = columns[i];
+                if (i > 0)
+                    sqlString.Append(",");
+
+                sqlString.Append("@").Append(member.ColumnName);
+            }
+
+            sqlString.Append(")");
+
+            return sqlString.ToString();
         }
 
         public string BuildSelect()

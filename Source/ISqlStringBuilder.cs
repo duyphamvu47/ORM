@@ -8,7 +8,7 @@ namespace ORM
 {
     public interface ISqlStringBuilder
     {
-        string BuildInsert();
+        string BuildInsert(EntityMapper entityMapping, List<string> columnNames);
         string BuildUpdate();
         string BuildDelete();
         string BuildSelect();
