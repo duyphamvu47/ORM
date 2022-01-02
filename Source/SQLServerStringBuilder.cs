@@ -54,9 +54,44 @@ namespace ORM
             throw new NotImplementedException();
         }
 
-        public string BuildUpdate()
+        public string BuildUpdate(EntityMapper entityMapping, List<string> updateColumns, List<string> whereColumns)
         {
-            throw new NotImplementedException();
+            StringBuilder sqlStr = new StringBuilder();
+            sqlStr.Append("UPDATE ").Append(entityMapping.TableName).Append(" SET ");
+
+            var columns = entityMapping.EntityColumns.Where(m => 
+                            updateColumns.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase)).ToArray();
+
+            var wheres = entityMapping.EntityColumns.Where(m => 
+                            whereColumns.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase)).ToArray();
+
+            // Build SET string
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var member = columns[i];
+                if (i > 0)
+                {
+                    sqlStr.Append(",");
+                }
+
+                sqlStr.Append(member.ColumnName).Append("=").Append("@").Append(member.ColumnName);
+            }
+
+            // Build WHERE string
+            sqlStr.Append(" WHERE ");
+            for (int i = 0; i < wheres.Length; i++)
+            {
+                var member = wheres[i];
+                if (i > 0)
+                {
+                    sqlStr.Append(",");
+                }
+
+                sqlStr.Append(member.ColumnName).Append("=").Append("@p").Append(member.ColumnName);
+            }
+
+            return sqlStr.ToString();
         }
     }
 }
