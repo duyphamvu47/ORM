@@ -8,18 +8,13 @@ namespace ORM
 {
     public class SQLServerStringBuilder : ISqlStringBuilder
     {
-        public string BuildDelete()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string BuildInsert(EntityMapper entityMapping, List<string> columnNames)
+        public string BuildInsert(EntityMapper entityMapper, List<string> columnNames)
         {
             StringBuilder sqlString = new StringBuilder();
-            sqlString.Append("INSERT INTO ").Append(entityMapping.TableName).Append(" (");
+            sqlString.Append("INSERT INTO ").Append(entityMapper.TableName).Append(" (");
 
             //Convert columnNames to string
-            var columns = entityMapping.EntityColumns
+            var columns = entityMapper.EntityColumns
                 .Where(m => m.IsDbGenerated == false && 
                             columnNames.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
                             .ToArray();
@@ -33,7 +28,7 @@ namespace ORM
                 sqlString.Append(member.ColumnName);
             }
 
-            //Pass value 
+            //Pass param
             sqlString.Append(") VALUES (");
             for (int i = 0; i < columns.Length; i++)
             {
@@ -54,19 +49,20 @@ namespace ORM
             throw new NotImplementedException();
         }
 
-        public string BuildUpdate(EntityMapper entityMapping, List<string> updateColumns, List<string> whereColumns)
+        public string BuildUpdate(EntityMapper entityMapper, List<string> updateColumns, List<string> whereConditions)
         {
             StringBuilder sqlStr = new StringBuilder();
-            sqlStr.Append("UPDATE ").Append(entityMapping.TableName).Append(" SET ");
+            sqlStr.Append("UPDATE ").Append(entityMapper.TableName).Append(" SET ");
 
-            var columns = entityMapping.EntityColumns.Where(m => 
-                            updateColumns.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase)).ToArray();
+            var columns = entityMapper.EntityColumns.Where(m => 
+                            updateColumns.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
+                            .ToArray();
 
-            var wheres = entityMapping.EntityColumns.Where(m => 
-                            whereColumns.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase)).ToArray();
+            var conditions = entityMapper.EntityColumns.Where(m => 
+                            whereConditions.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
+                            .ToArray();
 
             // Build SET string
-
             for (int i = 0; i < columns.Length; i++)
             {
                 var member = columns[i];
@@ -78,17 +74,41 @@ namespace ORM
                 sqlStr.Append(member.ColumnName).Append("=").Append("@").Append(member.ColumnName);
             }
 
-            // Build WHERE string
+            // Build WHERE string + pass param
             sqlStr.Append(" WHERE ");
-            for (int i = 0; i < wheres.Length; i++)
+            for (int i = 0; i < conditions.Length; i++)
             {
-                var member = wheres[i];
+                var member = conditions[i];
                 if (i > 0)
                 {
                     sqlStr.Append(",");
                 }
 
                 sqlStr.Append(member.ColumnName).Append("=").Append("@p").Append(member.ColumnName);
+            }
+
+            return sqlStr.ToString();
+        }
+
+        public string BuildDelete(EntityMapper entityMapper, List<string> whereConditions)
+        {
+            StringBuilder sqlStr = new StringBuilder();
+            sqlStr.Append("DELETE FROM ").Append(entityMapper.TableName).Append(" WHERE ");
+
+            var conditions = entityMapper.EntityColumns.Where(m => 
+                                whereConditions.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
+                                .ToArray();
+
+            // Pass param
+            for (int i = 0; i < conditions.Length; i++)
+            {
+                var member = conditions[i];
+                if (i > 0)
+                {
+                    sqlStr.Append(",");
+                }
+
+                sqlStr.Append(member.ColumnName).Append("=").Append("@").Append(member.ColumnName);
             }
 
             return sqlStr.ToString();
