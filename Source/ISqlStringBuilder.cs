@@ -11,6 +11,6 @@ namespace ORM
         string BuildInsert(EntityMapper entityMapper, List<string> columnNames);
         string BuildUpdate(EntityMapper entityMapper, List<string> updateColumns, List<string> whereConditions);
         string BuildDelete(EntityMapper entityMapper, List<string> whereConditions);
-        string BuildSelect();
+        string BuildSelect(EntityMapper entityMapper, string conditions, string orderBy);
     }
 }

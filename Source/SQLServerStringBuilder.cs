@@ -44,9 +44,35 @@ namespace ORM
             return sqlString.ToString();
         }
 
-        public string BuildSelect()
+        public string BuildSelect(EntityMapper entityMapper, string conditions, string orderBy)
         {
-            throw new NotImplementedException();
+            StringBuilder sqlStr = new StringBuilder();
+            sqlStr.Append("SELECT ");
+            // Build selected column
+            for (int i = 0; i < entityMapper.EntityColumns.Count; i++)
+            {
+                var member = entityMapper.EntityColumns[i];
+                if (i > 0)
+                {
+                    sqlStr.Append(",");
+                }
+
+                sqlStr.Append(member.ColumnName);
+            }
+
+            sqlStr.Append(" FROM ").Append(entityMapper.TableName);
+
+            if (!string.IsNullOrEmpty(conditions))
+            {
+                sqlStr.Append(" WHERE ").Append(conditions);
+            }
+
+            if (!string.IsNullOrEmpty(orderBy))
+            {
+                sqlStr.Append(" Order By ").Append(orderBy);
+            }
+
+            return sqlStr.ToString();
         }
 
         public string BuildUpdate(EntityMapper entityMapper, List<string> updateColumns, List<string> whereConditions)
