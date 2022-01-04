@@ -9,8 +9,8 @@ namespace ORM
     public class EntityMapper
     {
         public Type EntityType { get; internal set; }
-        public String TableName { get; set; }
-        public List<ColumnMapper> EntityColumns;
+        public string TableName { get; set; }
+        public List<ColumnMapper> EntityColumns { get; set; }
         public List<ColumnMapper> PrimaryKeys { get; set;}  
     }
 }
