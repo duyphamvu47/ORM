@@ -9,9 +9,9 @@ namespace ORM
 {
     public class ColumnMapper
     {
-        public string ColumnName;
-        public PropertyInfo PropInfo;
-        public bool IsPrimaryKey;
-        public bool IsDbGenerated;
+        public string ColumnName { get; internal set; }
+        public PropertyInfo PropInfo { get; set; }
+        public bool IsPrimaryKey { get; set; }
+        public bool IsDbAutoGenerate { get; set; }
     }
 }

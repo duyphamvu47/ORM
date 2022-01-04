@@ -3,12 +3,12 @@
 namespace ORM
 {
     [AttributeUsage(AttributeTargets.Property)]
-    class CollumnAttribute : Attribute
+    class ColumnAttribute : Attribute
     {
         public string Name { get; private set; }
         public bool IsAutoGenerate { get; set; }
 
-        public CollumnAttribute(string name)
+        public ColumnAttribute(string name)
         {
             this.Name = name;
         }

@@ -3,11 +3,11 @@
 namespace ORM
 {
     [AttributeUsage(AttributeTargets.Class)]
-    class TableAtrribute : Attribute
+    class TableAttribute : Attribute
     {
         public string Name { get; private set; }
 
-        public TableAtrribute(string name)
+        public TableAttribute(string name)
         {
             this.Name = name;
         }

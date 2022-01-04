@@ -8,24 +8,29 @@ namespace ORM
 {
     public class SQLServerConfigBuilder : IDbConfigBuilder
     {
+        private string address {get; set;}
+        private string port { get; set; }
+        private string password { get; set; }
+        private string custom { get; set; }
+
         public void addDbAddress(string addr)
         {
-            throw new NotImplementedException();
+            this.address = addr;
         }
 
         public void addDbCustom(string custom)
         {
-            throw new NotImplementedException();
+            this.custom = custom;
         }
 
         public void addDbPasswordString(string pass)
         {
-            throw new NotImplementedException();
+            this.password = pass;
         }
 
         public void addDbPort(string port)
         {
-            throw new NotImplementedException();
+            this.port = port;
         }
 
         public DbManager buildProvider()
@@ -35,7 +40,10 @@ namespace ORM
 
         public void reset()
         {
-            throw new NotImplementedException();
+            this.address = null;
+            this.port = null;
+            this.password = null;
+            this.custom = null;
         }
     }
 }

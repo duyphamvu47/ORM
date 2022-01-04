@@ -8,7 +8,7 @@ namespace ORM
 {
     public class DataMapper
     {
-        private Dictionary<Type, EntityMapper> entityMappings = new Dictionary<Type, EntityMapper>();
+        private static Dictionary<Type, EntityMapper> entityMappers = new Dictionary<Type, EntityMapper>();
 
         /*-------------------------------------------*/
 
@@ -20,6 +20,55 @@ namespace ORM
         private EntityMapper Get(Type type)
         {
             return null;
+        }
+
+        private static EntityMapper GenerateEntityMapper(Type type)
+        {
+            EntityMapper entityMapper = new EntityMapper()
+            {
+                EntityType = type
+            };
+            string tableName = string.Empty;
+
+            var properties = type.GetProperties();
+
+            TableAttribute[] tableAttrs = (TableAttribute[])type.GetCustomAttributes(typeof(TableAttribute), true);
+            if (tableAttrs.Length > 0)
+            {
+                tableName = tableAttrs[0].Name;
+            }
+            else
+            {
+                tableName = type.Name;
+            }
+
+
+            List<ColumnMapper> members = new List<ColumnMapper>();
+            for (int i = 0; i < properties.Length; i++)
+            {
+                var propI = properties[i];
+
+                var idAttrs = (IdTableAttribute[])propI.GetCustomAttributes(typeof(IdTableAttribute), true);
+                bool isPrimaryKey = idAttrs.Length > 0;
+
+                var attrs = (ColumnAttribute[])propI.GetCustomAttributes(typeof(ColumnAttribute), true);
+                if (attrs.Length > 0)
+                {
+                    var m = new ColumnMapper()
+                    {
+                        ColumnName = attrs[0].Name,
+                        IsDbAutoGenerate = attrs[0].IsAutoGenerate,
+                        PropInfo = propI,
+                        IsPrimaryKey = isPrimaryKey
+                    };
+                    members.Add(m);
+                }
+            }
+
+            entityMapper.TableName = tableName;
+            entityMapper.EntityColumns = members;
+            entityMapper.PrimaryKeys = members.Where(col => col.IsPrimaryKey).ToList();
+            return entityMapper;
         }
     }
 }

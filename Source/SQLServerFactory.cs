@@ -14,7 +14,7 @@ namespace ORM
         }
         public ISqlStringBuilder CreateSqlStringBuilder()
         {
-            return null;
+            return new SQLServerStringBuilder();
         }
     }
 }
