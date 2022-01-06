@@ -12,8 +12,6 @@ namespace ORM
         protected DbManager _dbProvider;
         protected IDbFactory _dbFactory;
 
-        /*-------------------------------------------*/
-
         public virtual void onConfiguareDB()
         {
 
@@ -75,9 +73,34 @@ namespace ORM
             return _dbProvider.ExecuteNonQuery(sql, parameters);
         }
 
-        public void read()
+        public List<T> readAll<T>(string where, string orderBy)
         {
+            var entityMapper = DataMapper.Get<T>();
 
+            var sql = this._sqlStringBuilder.BuildSelect(entityMapper, where.ToString(), orderBy);
+
+            Console.WriteLine(sql);
+            return readAllBySql<T>(sql, null);
+        }
+
+        public List<T> readAllBySql<T>(string sqlString, Dictionary<string, object> valOfParams)
+        {
+            var entityMapping = DataMapper.Get<T>();
+
+            using (var resultReader = _dbProvider.ExecuteReader(sqlString, valOfParams))
+            {
+                List<T> list = new List<T>();
+
+                var func = ObjectConverter.GetTypeDeserializer<T>(entityMapping);
+                DbReader dbReader = new DbReader(resultReader);
+
+                while (resultReader.Read())
+                {
+                    var entity = func(dbReader);
+                    list.Add(entity);
+                }
+                return list;
+            }
         }
     }
 }

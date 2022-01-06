@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -15,12 +16,34 @@ namespace ORM
         private static Dictionary<Type, Func<object, Dictionary<string, object>>> dictionaryCache = new Dictionary<Type, Func<object, Dictionary<string, object>>>();
         public static Dictionary<Type, Delegate> typeDeserializers = new Dictionary<Type, Delegate>();
 
-
-        /*--------------------------------------------------------------------------------------*/
-
-        public static Func<DbReader, T> GetTypeDeserializer<T>(EntityMapper entityMappers)
+        public static Func<DbReader, T> GetTypeDeserializer<T>(EntityMapper entityMapper)
         {
-            return null;
+            if (typeDeserializers.ContainsKey(entityMapper.EntityType) == false)
+            {
+                ParameterExpression parExpr = Expression.Parameter(typeof(DbReader), "r");
+
+
+                var newExpr = Expression.New(entityMapper.EntityType.GetConstructors().First());
+
+                var method = typeof(DbReader).GetMethods().Where(c => c.Name == "GetValue" && c.IsGenericMethod).First();
+
+                List<MemberBinding> memberBindings = new List<MemberBinding>();
+                int index = 0;
+                foreach (var item in entityMapper.EntityColumns)
+                {
+                    var callExpr = Expression.Call(parExpr, method.MakeGenericMethod(item.PropInfo.PropertyType), Expression.Constant(index));
+                    var memberAssignment = Expression.Bind(item.PropInfo, callExpr);
+                    memberBindings.Add(memberAssignment);
+                    index++;
+                }
+
+                var init = Expression.MemberInit(newExpr, memberBindings);
+                Expression<Func<DbReader, T>> expr = (Expression<Func<DbReader, T>>)Expression.Lambda(init, parExpr);
+
+                var func = expr.Compile();
+                typeDeserializers.Add(entityMapper.EntityType, func);
+            }
+            return (Func<DbReader, T>)typeDeserializers[entityMapper.EntityType];
         }
 
         public static Dictionary<string, object> ConvertDictionaryFromObject(object inputObject)
