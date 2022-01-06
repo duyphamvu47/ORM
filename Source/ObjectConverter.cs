@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -21,9 +23,40 @@ namespace ORM
             return null;
         }
 
-        public static Dictionary<string, object> ConvertFromObject(object obj)
+        public static Dictionary<string, object> ConvertDictionaryFromObject(object inputObject)
         {
-            return null;
+            if (inputObject is Dictionary<string, object>)
+                return (Dictionary<string, object>)inputObject;
+
+            var nameValCol = inputObject as NameValueCollection;
+            if (nameValCol != null)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                foreach (string key in nameValCol.Keys)
+                    dict.Add(key, nameValCol[key]);
+                return dict;
+            }
+
+            var hashtable = inputObject as Hashtable;
+            if (hashtable != null)
+            {
+                Dictionary<string, object> dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+                foreach (string key in hashtable.Keys.OfType<string>())
+                    dict.Add(key, hashtable[key]);
+                return dict;
+            }
+            var objType = inputObject.GetType();
+            lock (dictionaryCache)
+            {
+                Func<object, Dictionary<string, object>> getter;
+                if (dictionaryCache.TryGetValue(objType, out getter) == false)
+                {
+                    getter = CreateDictionaryGenerator(objType);
+                    dictionaryCache[objType] = getter;
+                }
+                var dict = getter(inputObject);
+                return dict;
+            }
         }
 
         public static Func<object, Dictionary<string, object>> CreateDictionaryGenerator(Type type)
