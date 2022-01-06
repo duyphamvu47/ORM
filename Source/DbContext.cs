@@ -19,17 +19,17 @@ namespace ORM
 
         }
 
-        public void insert(ObjectConverter objectConverter)
+        public void insert<T>(T data)
         {
 
         }
 
-        public void update(ObjectConverter objectConverter)
+        public void update<T>(T data)
         {
 
         }
 
-        public void delete(ObjectConverter objectConverter)
+        public void delete<T>(T data)
         {
 
         }
