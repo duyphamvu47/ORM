@@ -10,8 +10,6 @@ namespace ORM
     {
         private static Dictionary<Type, EntityMapper> entityMappers = new Dictionary<Type, EntityMapper>();
 
-        /*-------------------------------------------*/
-
         public static EntityMapper Get<T>()
         {
             return Get(typeof(T));

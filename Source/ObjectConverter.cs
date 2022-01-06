@@ -13,7 +13,7 @@ namespace ORM
     public class ObjectConverter
     {
         private static Dictionary<Type, Func<object, Dictionary<string, object>>> dictionaryCache = new Dictionary<Type, Func<object, Dictionary<string, object>>>();
-        public static Dictionary<Type, Delegate> typeTypeDeserializers = new Dictionary<Type, Delegate>();
+        public static Dictionary<Type, Delegate> typeDeserializers = new Dictionary<Type, Delegate>();
 
 
         /*--------------------------------------------------------------------------------------*/

@@ -11,7 +11,7 @@ namespace ORM
         private string address {get; set;}
         private string port { get; set; }
         private string password { get; set; }
-        private string custom { get; set; }
+        private StringBuilder custom { get; set; }
 
         public void addDbAddress(string addr)
         {
@@ -20,7 +20,11 @@ namespace ORM
 
         public void addDbCustom(string custom)
         {
-            this.custom = custom;
+            if (this.custom.Length > 0)
+            {
+                this.custom.Append("; ");
+            }
+            this.custom.Append(custom);
         }
 
         public void addDbPasswordString(string pass)
