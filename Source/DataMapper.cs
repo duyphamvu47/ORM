@@ -12,12 +12,12 @@ namespace ORM
 
         /*-------------------------------------------*/
 
-        private EntityMapper Get<T>()
+        public static EntityMapper Get<T>()
         {
             return Get(typeof(T));
         }
 
-        private EntityMapper Get(Type type)
+        public static EntityMapper Get(Type type)
         {
             EntityMapper _entityMapper;
             if (entityMappers.TryGetValue(type, out _entityMapper) == false)
@@ -28,7 +28,7 @@ namespace ORM
             return _entityMapper;
         }
 
-        private static EntityMapper GenerateEntityMapper(Type type)
+        public static EntityMapper GenerateEntityMapper(Type type)
         {
             EntityMapper entityMapper = new EntityMapper()
             {

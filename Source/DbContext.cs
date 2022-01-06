@@ -8,20 +8,27 @@ namespace ORM
 {
     public class DbContext
     {
-        protected ISqlStringBuilder sqlStringBuilder;
-        protected DbManager dbProvider;
-        protected IDbFactory dbFactory;
+        protected ISqlStringBuilder _sqlStringBuilder;
+        protected DbManager _dbProvider;
+        protected IDbFactory _dbFactory;
 
         /*-------------------------------------------*/
 
-        public void onConfiguareDB()
+        public virtual void onConfiguareDB()
         {
 
         }
 
-        public void insert<T>(T data)
+        /** 
+         * input object as type of entity
+         * Return int - the number of row inserted
+         */
+        public int insert<T>(T data)
         {
-
+            var entityMapper = DataMapper.Get<T>();
+            var valOfParams = ObjectConverter.ConvertDictionaryFromObject(data);
+            var sql = _sqlStringBuilder.BuildInsert(entityMapper, valOfParams.Keys.ToList());
+            return _dbProvider.ExecuteNonQuery(sql, valOfParams);
         }
 
         public void update<T>(T data)
@@ -29,9 +36,27 @@ namespace ORM
 
         }
 
-        public void delete<T>(T data)
+        /** 
+         * input list of primary key values - 1 table can have multiple primary key
+         * Return int - the number of row inserted
+         */
+        public int deleteByID<T>(Dictionary<string, object> tablePrimaryKeyVals)
         {
+            var entityMapper = DataMapper.Get<T>();
 
+            if (tablePrimaryKeyVals.Count() != entityMapper.PrimaryKeys.Count)
+                throw new ArgumentException("primary keys values is inconsistence with primary keys in table");
+
+            var parameters = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < entityMapper.PrimaryKeys.Count; i++)
+            {
+                var columnName = entityMapper.PrimaryKeys[i].ColumnName;
+                parameters.Add(columnName, tablePrimaryKeyVals.GetValueOrDefault(columnName));
+            }
+
+            var sql = _sqlStringBuilder.BuildDelete(entityMapper, parameters.Keys.ToList());
+
+            return _dbProvider.ExecuteNonQuery(sql, parameters);
         }
 
         public void read()
