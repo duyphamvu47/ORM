@@ -31,9 +31,25 @@ namespace ORM
             return _dbProvider.ExecuteNonQuery(sql, valOfParams);
         }
 
-        public void update<T>(T data)
+        public int update<T>(T data)
         {
+            var entityMapper = DataMapper.Get<T>();
+            var valOfParams = ObjectConverter.ConvertDictionaryFromObject(data);
+            var columns = entityMapper.EntityColumns.Where(col => col.IsDbAutoGenerate == false && col.IsPrimaryKey == false).Select(c => c.ColumnName).ToArray();
+            var updateColumns = new Dictionary<string, object>();
+            var whereColumns = new Dictionary<string, object>();
 
+            foreach (var item in valOfParams)
+            {
+                if (columns.Contains(item.Key))
+                    updateColumns.Add(item.Key, item.Value);
+                if (entityMapper.PrimaryKeys.All(pk => pk.ColumnName == item.Key))
+                    whereColumns.Add(item.Key, item.Value);
+            }
+
+            var sql = _sqlStringBuilder.BuildUpdate(entityMapper, updateColumns.Keys.ToList(), whereColumns.Keys.ToList());
+
+            return _dbProvider.ExecuteNonQuery(sql, valOfParams);
         }
 
         /** 
