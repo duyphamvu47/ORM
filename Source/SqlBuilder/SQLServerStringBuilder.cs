@@ -15,7 +15,7 @@ namespace ORM
 
             //Convert columnNames to string
             var columns = entityMapper.EntityColumns
-                .Where(m => m.IsDbAutoGenerate == false && 
+                .Where(m => m.IsDbGenerated == false && 
                             columnNames.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
                             .ToArray();
 
@@ -23,7 +23,7 @@ namespace ORM
             {
                 var member = columns[i];
                 if (i > 0)
-                    sqlString.Append(",");
+                    sqlString.Append(", ");
 
                 sqlString.Append(member.ColumnName);
             }
@@ -34,7 +34,7 @@ namespace ORM
             {
                 var member = columns[i];
                 if (i > 0)
-                    sqlString.Append(",");
+                    sqlString.Append(", ");
 
                 sqlString.Append("@").Append(member.ColumnName);
             }
@@ -54,7 +54,7 @@ namespace ORM
                 var member = entityMapper.EntityColumns[i];
                 if (i > 0)
                 {
-                    sqlStr.Append(",");
+                    sqlStr.Append(", ");
                 }
 
                 sqlStr.Append(member.ColumnName);
@@ -94,7 +94,7 @@ namespace ORM
                 var member = columns[i];
                 if (i > 0)
                 {
-                    sqlStr.Append(",");
+                    sqlStr.Append(", ");
                 }
 
                 sqlStr.Append(member.ColumnName).Append("=").Append("@").Append(member.ColumnName);
@@ -107,7 +107,7 @@ namespace ORM
                 var member = conditions[i];
                 if (i > 0)
                 {
-                    sqlStr.Append(",");
+                    sqlStr.Append(", ");
                 }
 
                 sqlStr.Append(member.ColumnName).Append("=").Append("@p").Append(member.ColumnName);
@@ -131,7 +131,7 @@ namespace ORM
                 var member = conditions[i];
                 if (i > 0)
                 {
-                    sqlStr.Append(",");
+                    sqlStr.Append(", ");
                 }
 
                 sqlStr.Append(member.ColumnName).Append("=").Append("@").Append(member.ColumnName);
