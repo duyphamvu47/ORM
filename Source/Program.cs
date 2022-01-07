@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ORM.QueryUtils.QueryUtilsEnum;
+using System;
 
 namespace ORM
 {
@@ -9,7 +10,8 @@ namespace ORM
             //insertEquipment();
             //updateEquipment();
             //deleteEquipment();
-            readAllEquipment();
+            //readAllEquipment();
+            readEquipmentsWithWhere();
 
             Console.WriteLine();
             Console.WriteLine("Press any key to stop...");
@@ -67,6 +69,31 @@ namespace ORM
                 var equip = list[list.Count - 1];
 
                 context.delete<equipment>(equip);
+            }
+        }
+
+        static void readEquipmentsWithWhere()
+        {
+            IQueryBuilder queryWhere1 = new SqlServerQueryBuilder();
+            queryWhere1.where("Type", WhereOperatorEnum.Equals, 2);
+
+            IQueryBuilder queryWhere2 = new SqlServerQueryBuilder();
+            queryWhere2.where("Id", WhereOperatorEnum.GreaterThan, 4);
+
+            IQueryBuilder queryWhere3 = new SqlServerQueryBuilder();
+            queryWhere3.whereIn("HeroId", new int[] { 1, 3 });
+
+            string whereString = queryWhere1.whereAnd(queryWhere2)
+                .whereOr(queryWhere3)
+                .ToWhereString();
+
+            DbContext context = new SuperHeroAppContext();
+            var list = context.readAll<equipment>(whereString, string.Empty);
+
+            Console.WriteLine("ID, Name, Type, HeroId");
+            foreach (var item in list)
+            {
+                Console.WriteLine(item.id + "," + item.name + "," + item.type + "," + item.HeroId);
             }
         }
     }
