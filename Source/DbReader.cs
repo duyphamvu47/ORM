@@ -10,7 +10,7 @@ namespace ORM
 {
     public class DbReader
     {
-        private static MethodInfo genericGetValue = typeof(DbReader).GetMethods().Where(c => c.Name == "GetValue" && c.IsGenericMethod).First();
+        private static MethodInfo genericGetValue = typeof(DbReader).GetMethods().Where(c => c.Name == "getValue" && c.IsGenericMethod).First();
         private IDataReader reader;
 
         /*-------------------------------------------------------*/
