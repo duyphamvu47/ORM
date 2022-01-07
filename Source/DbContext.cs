@@ -46,13 +46,43 @@ namespace ORM
             {
                 if (columns.Contains(item.Key))
                     updateColumns.Add(item.Key, item.Value);
-                if (entityMapper.PrimaryKeys.All(pk => pk.ColumnName == item.Key))
+                if (entityMapper.PrimaryKeys.Any(pk => pk.ColumnName == item.Key))
+                {
                     whereColumns.Add(item.Key, item.Value);
+                }
+            }
+
+            var executeParams = new Dictionary<string, object>();
+            foreach (var item in updateColumns)
+            {
+                executeParams.Add(item.Key, item.Value);
+            }
+
+            foreach (var item in whereColumns)
+            {
+                executeParams.Add("p" + item.Key, item.Value);
             }
 
             var sql = _sqlStringBuilder.BuildUpdate(entityMapper, updateColumns.Keys.ToList(), whereColumns.Keys.ToList());
 
-            return _dbProvider.ExecuteNonQuery(sql, valOfParams);
+            return _dbProvider.ExecuteNonQuery(sql, executeParams);
+        }
+
+        public int delete<T>(T data)
+        {
+            var entityMapper = DataMapper.Get<T>();
+            var valOfParams = ObjectConverter.ConvertDictionaryFromObject(data);
+            var whereColumns = new Dictionary<string, object>();
+
+            foreach (var item in valOfParams)
+            {
+                if (entityMapper.PrimaryKeys.Any(pk => pk.ColumnName == item.Key))
+                {
+                    whereColumns.Add(item.Key, item.Value);
+                }
+            }
+
+            return deleteByID<T>(whereColumns);
         }
 
         /** 

@@ -91,9 +91,13 @@ namespace ORM
             il.Emit(OpCodes.Newobj, typeof(Dictionary<string, object>).GetConstructor(Type.EmptyTypes));
             il.Emit(OpCodes.Stloc_0);
 
-            foreach (var item in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            var entityMapper = DataMapper.Get(type);
+
+            foreach (var col in entityMapper.EntityColumns)
             {
-                string columnName = item.Name;
+                var item = col.PropInfo;
+                string columnName = col.ColumnName;
+
                 il.Emit(OpCodes.Nop);
                 il.Emit(OpCodes.Ldloc_0);
                 il.Emit(OpCodes.Ldstr, columnName);

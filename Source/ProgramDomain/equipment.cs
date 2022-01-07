@@ -17,5 +17,8 @@ namespace ORM
 
         [Column("Type")]
         public int type { get; set; }
+
+        [Column("HeroId")]
+        public int HeroId { get; set; }
     }
 }
