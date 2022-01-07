@@ -12,6 +12,11 @@ namespace ORM
         protected DbManager _dbProvider;
         protected IDbFactory _dbFactory;
 
+        public DbContext()
+        {
+            onConfiguareDB();
+        }
+
         public virtual void onConfiguareDB()
         {
 
@@ -77,7 +82,7 @@ namespace ORM
         {
             var entityMapper = DataMapper.Get<T>();
 
-            var sql = this._sqlStringBuilder.BuildSelect(entityMapper, where.ToString(), orderBy);
+            var sql = this._sqlStringBuilder.BuildSelect(entityMapper, where, orderBy);
 
             Console.WriteLine(sql);
             return readAllBySql<T>(sql, null);
@@ -101,6 +106,26 @@ namespace ORM
                 }
                 return list;
             }
+        }
+
+        public void changeSqlStringBuilder(ISqlStringBuilder builder)
+        {
+            this._sqlStringBuilder = builder;
+        }
+
+        public void changeProvider(DbManager provider)
+        {
+            this._dbProvider = provider;
+        }
+
+        public void changeFactory(IDbFactory factory)
+        {
+            this._dbFactory = factory;
+        }
+
+        public IDbFactory getFactory()
+        {
+            return this._dbFactory;
         }
     }
 }

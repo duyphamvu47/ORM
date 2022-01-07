@@ -11,8 +11,9 @@ namespace ORM
         void reset();
         void addDbAddress(string addr);
         void addDbPort(string port);
-        void addDbPasswordString (string pass);
+        void addDbPassword (string pass);
         void addDbCustom(string custom);
+        void addDbName(string name);
         DbManager buildProvider();
     }
 }

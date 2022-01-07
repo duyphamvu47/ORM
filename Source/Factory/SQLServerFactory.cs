@@ -10,7 +10,7 @@ namespace ORM
     {
         public IDbConfigBuilder CreateConfigBuilder()
         {
-            return null;
+            return new SQLServerConfigBuilder();
         }
         public ISqlStringBuilder CreateSqlStringBuilder()
         {

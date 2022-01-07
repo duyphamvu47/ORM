@@ -25,7 +25,7 @@ namespace ORM
 
                 var newExpr = Expression.New(entityMapper.EntityType.GetConstructors().First());
 
-                var method = typeof(DbReader).GetMethods().Where(c => c.Name == "GetValue" && c.IsGenericMethod).First();
+                var method = typeof(DbReader).GetMethods().Where(c => c.Name == "getValue" && c.IsGenericMethod).First();
 
                 List<MemberBinding> memberBindings = new List<MemberBinding>();
                 int index = 0;

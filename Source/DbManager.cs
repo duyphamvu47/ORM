@@ -55,12 +55,15 @@ namespace ORM
                 var command = this.connection.CreateCommand();
                 command.CommandText = sqlStr;
 
-                foreach (var condition in conditions)
+                if (conditions != null && conditions.Count > 0)
                 {
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = condition.Key;
-                    parameter.Value = condition.Value ?? DBNull.Value;
-                    command.Parameters.Add(parameter);
+                    foreach (var condition in conditions)
+                    {
+                        var parameter = command.CreateParameter();
+                        parameter.ParameterName = condition.Key;
+                        parameter.Value = condition.Value ?? DBNull.Value;
+                        command.Parameters.Add(parameter);
+                    }
                 }
 
                 if (isClose)
