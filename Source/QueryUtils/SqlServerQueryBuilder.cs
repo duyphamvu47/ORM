@@ -129,6 +129,18 @@ namespace ORM
             return clone();
         }
 
+        public IQueryBuilder whereCustomOperator(string customClause)
+        {
+            if (!isCanAddWhereOperator())
+            {
+                throw new Exception("Where condition with operator can only be added 1 time");
+            }
+
+            this._whereStringBuilder.Append(customClause);
+
+            return clone();
+        }
+
         public StringBuilder getWhereBuilder()
         {
             return this._whereStringBuilder;
