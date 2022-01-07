@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <Authors>Hồ Nguyễn Huy Hoàng, Phạm Vũ Duy, Nguyễn Đức Hiếu, Mai Đăng Khánh</Authors>
+    <Company>Hồ Nguyễn Huy Hoàng, Phạm Vũ Duy, Nguyễn Đức Hiếu, Mai Đăng Khánh</Company>
   </PropertyGroup>
 
   <ItemGroup>
