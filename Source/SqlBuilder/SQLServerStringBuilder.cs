@@ -15,7 +15,7 @@ namespace ORM
 
             //Convert columnNames to string
             var columns = entityMapper.EntityColumns
-                .Where(m => m.IsDbGenerated == false && 
+                .Where(m => m.IsDbAutoGenerate == false && 
                             columnNames.Contains(m.ColumnName, StringComparer.OrdinalIgnoreCase))
                             .ToArray();
 
