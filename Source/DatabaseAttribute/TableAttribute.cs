@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ORM
+namespace ORM.DatabaseAttribute
 {
     [AttributeUsage(AttributeTargets.Class)]
     class TableAttribute : Attribute

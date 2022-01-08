@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ORM
+namespace ORM.DbConfig
 {
     public interface IDbConfigBuilder
     {

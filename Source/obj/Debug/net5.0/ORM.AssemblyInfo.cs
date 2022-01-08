@@ -11,7 +11,7 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("ORM")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Hồ Nguyễn Huy Hoàng, Phạm Vũ Duy, Nguyễn Đức Hiếu, Mai Đăng Khánh")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]

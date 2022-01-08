@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ORM.DatabaseAttribute;
 
-namespace ORM
+namespace ORM.ProgramDomain
 {
     [Table("Equipments")]
     class equipment

@@ -1,5 +1,7 @@
 ﻿using ORM.QueryUtils.QueryUtilsEnum;
 using System;
+using ORM.ProgramDomain;
+using ORM.QueryUtils;
 
 namespace ORM
 {
@@ -37,7 +39,7 @@ namespace ORM
 
             var newEquip = new equipment()
             {
-                name = "Quan OOP",
+                name = "Dai lung OOP",
                 type = 1,
                 HeroId = 1,
             };
@@ -88,7 +90,7 @@ namespace ORM
                 .ToWhereString();
 
             DbContext context = new SuperHeroAppContext();
-            var list = context.readAll<equipment>(whereString, string.Empty);
+            var list = context.readAll<equipment>(whereString, "Name desc");
 
             Console.WriteLine("ID, Name, Type, HeroId");
             foreach (var item in list)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ORM.Factory;
+using ORM.DbConfig;
 
 namespace ORM
 {
